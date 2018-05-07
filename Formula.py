@@ -5,4 +5,4 @@ class Formula(object):
         self.arg = arg
         self.valor = valor
         self.beta = beta
-        self.formList = formList
+        self.l = l
