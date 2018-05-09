@@ -13,7 +13,7 @@ def createTree():
     formula = Formula.Formula
     formula.str = rawGlobal[0]
     rawGlobal.pop(0)
-    if (rawGlobal[0] in ['*','+',')']):        
+    if (rawGlobal[0] in ['*','+',')']):
         formula.left = createTree()
         formula.right = createTree()
     elif (rawGlobal[0] == '-'):
@@ -30,14 +30,15 @@ def createTree():
 
 with open('test/test1.seq') as f:
     for l in f:
+        raw = []
         if (count == 0):
             cardinality = l
+            count += 1
         else:
             formula = Formula.Formula
             raw = l.split(" ")
             raw[len(raw)-1] = raw[len(raw)-1].rstrip()
-            # raw.insert(0,'1')
-            formList.append(raw)
-        count += 1
-        rawGlobal = l
-        formList.append(createTree)
+            # print(raw)
+            rawGlobal = raw
+            formList.append(createTree())
+print(formList)
