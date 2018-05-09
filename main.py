@@ -19,13 +19,9 @@ def createTree():
     elif (formula.str == '-'):
         formula.left = createTree()
         formula.right = None
-    elif (formula.str.isdigit()):
+    else: #(formula.str.isdigit()):
         formula.left = None
         formula.right = None
-    else:
-        '''
-            O QUE????
-        '''
     return formula
 
 with open('test/test1.seq') as f:
