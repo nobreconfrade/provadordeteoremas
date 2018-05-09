@@ -1,8 +1,10 @@
 class Formula(object):
     """docstring for Formula."""
-    def __init__(self, arg):
-        super(Formula, self).__init__()
-        self.arg = arg
-        self.valor = valor
-        self.beta = beta
-        self.l = l
+    def __init__(self):
+        pass
+    def tprint(self):        
+        print(self.str,end="")
+        if(self.left is not None):
+            self.left.tprint()
+        if(self.right is not None):
+            self.right.tprint()
