@@ -3,8 +3,8 @@ class Tablo(object):
     def __init__(self):
         pass
     def tprint(self):
-        print(self.str,end="")
-        if(self.left is not None):
-            self.left.tprint()
-        if(self.right is not None):
-            self.right.tprint()
+        print("VALOR:",self.valor,self.formula.str,end="")
+        if(self.formula.left is not None):
+            self.formula.left.tprint()
+        if(self.formula.right is not None):
+            self.formula.right.tprint()

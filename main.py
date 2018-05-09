@@ -26,51 +26,60 @@ def createTree():
         formula.right = None
     return formula
 
-def expAlfa(ramo,alfaRule):
+def expAlfa(ramo):
+    global alfaRule
     for i in ramo:
+        tablo = Tablo.Tablo()
         if (i.valor == False):
+            # print(i.formula.str)
             if (i.formula.str == ')'):
-                tablo = Tablo.Tablo
                 tablo.formula = i.formula.left
                 tablo.valor = True
+                # print(tablo.valor)
+                # tablo.tprint()
+                # print()
                 ramo.append(tablo)
+                tablo = Tablo.Tablo()
+
+                # print(ramo[len(ramo)-1].valor)
+                # ramo[len(ramo)-1].tprint()
+                # print()
                 tablo.formula = i.formula.right
                 tablo.valor = False
                 ramo.append(tablo)
                 alfaRule += 1
             if (i.formula.str == '+'):
-                tablo = Tablo.Tablo
                 tablo.formula = i.formula.left
                 tablo.valor = False
                 ramo.append(tablo)
+                tablo = Tablo.Tablo()
                 tablo.formula = i.formula.right
                 tablo.valor = False
                 ramo.append(tablo)
                 alfaRule += 1
             if (i.formula.str == '-'):
-                tablo = Tablo.Tablo
                 tablo.formula = i.formula.left
                 tablo.valor = True
                 ramo.append(tablo)
-
+                alfaRule += 1
         if (i.valor == True):
             if (i.formula.str == '*'):
-                tablo = Tablo.Tablo
                 tablo.formula = i.formula.left
                 tablo.valor = True
                 ramo.append(tablo)
+                tablo = Tablo.Tablo()
                 tablo.formula = i.formula.right
                 tablo.valor = True
                 ramo.append(tablo)
                 alfaRule += 1
             if (i.formula.str == '-'):
-                tablo = Tablo.Tablo
                 tablo.formula = i.formula.left
                 tablo.valor = False
+                alfaRule += 1
                 ramo.append(tablo)
     return ramo
 
-with open('test/3.seq') as f:
+with open('test/testAlfas.seq') as f:
     for l in f:
         raw = []
         if (count == 0):
@@ -83,13 +92,13 @@ with open('test/3.seq') as f:
             rawGlobal = raw
             formList.append(createTree())
 for i in formList:
-    tablo = Tablo.Tablo
+    tablo = Tablo.Tablo()
     tablo.formula = i
     tablo.valor = True
     ramo.append(tablo)
 ramo[len(ramo)-1].valor = False
 
-ramo = expAlfa(ramo,alfaRule)
+ramo = expAlfa(ramo)
 for i in ramo:
     i.tprint()
     print()
