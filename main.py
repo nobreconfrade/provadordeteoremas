@@ -39,23 +39,23 @@ def expAlfa(ramo):
     for i in ramo:
         if (i.valor == False):
             if (i.formula.str == ')'):
-                ramo = alfa(True,  i.formula.left,  ramo)
-                ramo = alfa(False, i.formula.right, ramo)
+                ramo = alfaRule(True,  i.formula.left,  ramo)
+                ramo = alfaRule(False, i.formula.right, ramo)
                 countAlfaRule += 1
             if (i.formula.str == '+'):
-                ramo = alfa(False, i.formula.left,  ramo)
-                ramo = alfa(False, i.formula.right, ramo) 
+                ramo = alfaRule(False, i.formula.left,  ramo)
+                ramo = alfaRule(False, i.formula.right, ramo) 
                 countAlfaRule += 1
             if (i.formula.str == '-'):
-                ramo = alfa(True,  i.formula.left,  ramo)
+                ramo = alfaRule(True,  i.formula.left,  ramo)
                 countAlfaRule += 1
         if (i.valor == True):
             if (i.formula.str == '*'):
-                ramo = alfa(True,  i.formula.left,  ramo)
-                ramo = alfa(True, i.formula.right, ramo)
+                ramo = alfaRule(True,  i.formula.left,  ramo)
+                ramo = alfaRule(True, i.formula.right, ramo)
                 countAlfaRule += 1
             if (i.formula.str == '-'):
-                ramo = alfa(False,  i.formula.left,  ramo)
+                ramo = alfaRule(False,  i.formula.left,  ramo)
                 countAlfaRule += 1
     return ramo
 
