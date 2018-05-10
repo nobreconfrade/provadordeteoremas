@@ -9,8 +9,9 @@ cardinality = 0
 rawGlobal = []
 formList = []
 ramo = []
-countAlfaRule = 0
+TamAtual = 0
 countBetaRule = 0
+betas = []
 
 def createTree():
     formula = Formula.Formula()
@@ -35,53 +36,57 @@ def alfaRule(val, subtree, ramo):
     return ramo
 
 def expAlfa(ramo):
-    global countAlfaRule
-    for i in ramo:
+    global TamAtual
+    for i in ramo[TamAtual::]:
         if (i.valor == False):
             if (i.formula.str == ')'):
                 ramo = alfaRule(True,  i.formula.left,  ramo)
                 ramo = alfaRule(False, i.formula.right, ramo)
-                countAlfaRule += 1
-            if (i.formula.str == '+'):
+                TamAtual += 1
+            elif (i.formula.str == '+'):
                 ramo = alfaRule(False, i.formula.left,  ramo)
                 ramo = alfaRule(False, i.formula.right, ramo)
-                countAlfaRule += 1
-            if (i.formula.str == '-'):
+                TamAtual += 1
+            elif (i.formula.str == '-'):
                 ramo = alfaRule(True,  i.formula.left,  ramo)
-                countAlfaRule += 1
-        if (i.valor == True):
+                TamAtual += 1
+            else:
+                betas.append(ramo.index(i))
+        else: # (i.valor == True):
             if (i.formula.str == '*'):
                 ramo = alfaRule(True,  i.formula.left,  ramo)
                 ramo = alfaRule(True, i.formula.right, ramo)
-                countAlfaRule += 1
-            if (i.formula.str == '-'):
+                TamAtual += 1
+            elif (i.formula.str == '-'):
                 ramo = alfaRule(False,  i.formula.left,  ramo)
-                countAlfaRule += 1
+                TamAtual += 1
+            else:
+                betas.append(ramo.index(i))
     return ramo
 
 def expBeta(ramo):
-        global countBetaRule
-        for i in ramo:
-            if (i.valor == False):
-                if (i.formula.str == '*'):
-                    ramo = betaRule()
-                    ramo = betaRule()
-                    countBetaRule += 1
-                if (i.formula.str == '-'):
-                    ramo = betaRule()
-                    countBetaRule += 1
-            if (i.valor == True):
-                if (i.formula.str == '+'):
-                    ramo = betaRule()
-                    ramo = betaRule()
-                    countBetaRule += 1
-                if (i.formula.str == ')'):
-                    ramo = betaRule()
-                    ramo = betaRule()
-                    countBetaRule += 1
-                if (i.formula.str == '-'):
-                    ramo = betaRule()
-                    countBetaRule += 1
+    global countBetaRule
+    for i in ramo:
+        if (i.valor == False):
+            if (i.formula.str == '*'):
+                ramo = betaRule()
+                ramo = betaRule()
+                countBetaRule += 1
+            if (i.formula.str == '-'):
+                ramo = betaRule()
+                countBetaRule += 1
+        if (i.valor == True):
+            if (i.formula.str == '+'):
+                ramo = betaRule()
+                ramo = betaRule()
+                countBetaRule += 1
+            if (i.formula.str == ')'):
+                ramo = betaRule()
+                ramo = betaRule()
+                countBetaRule += 1
+            if (i.formula.str == '-'):
+                ramo = betaRule()
+                countBetaRule += 1
     return
 
 with open('test/3.seq') as f:
@@ -104,6 +109,13 @@ for i in formList:
 ramo[len(ramo)-1].valor = False
 
 ramo = expAlfa(ramo)
+
+print("Ramo:")
 for i in ramo:
     i.tprint()
+    print()
+
+print("Betas:")
+for i in betas:
+    ramo[i].tprint()
     print()
