@@ -10,7 +10,7 @@ rawGlobal = []
 formList = []
 ramo = []
 countAlfaRule = 0
-
+countBetaRule = 0
 
 def createTree():
     formula = Formula.Formula()
@@ -44,7 +44,7 @@ def expAlfa(ramo):
                 countAlfaRule += 1
             if (i.formula.str == '+'):
                 ramo = alfaRule(False, i.formula.left,  ramo)
-                ramo = alfaRule(False, i.formula.right, ramo) 
+                ramo = alfaRule(False, i.formula.right, ramo)
                 countAlfaRule += 1
             if (i.formula.str == '-'):
                 ramo = alfaRule(True,  i.formula.left,  ramo)
@@ -59,8 +59,32 @@ def expAlfa(ramo):
                 countAlfaRule += 1
     return ramo
 
+def expBeta(ramo):
+        global countBetaRule
+        for i in ramo:
+            if (i.valor == False):
+                if (i.formula.str == '*'):
+                    ramo = betaRule()
+                    ramo = betaRule()
+                    countBetaRule += 1
+                if (i.formula.str == '-'):
+                    ramo = betaRule()
+                    countBetaRule += 1
+            if (i.valor == True):
+                if (i.formula.str == '+'):
+                    ramo = betaRule()
+                    ramo = betaRule()
+                    countBetaRule += 1
+                if (i.formula.str == ')'):
+                    ramo = betaRule()
+                    ramo = betaRule()
+                    countBetaRule += 1
+                if (i.formula.str == '-'):
+                    ramo = betaRule()
+                    countBetaRule += 1
+    return
 
-with open('test/testAlfas.seq') as f:
+with open('test/3.seq') as f:
     for l in f:
         raw = []
         if (count == 0):
