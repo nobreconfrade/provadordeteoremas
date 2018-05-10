@@ -10,8 +10,8 @@ rawGlobal = []
 formList = []
 ramo = []
 TamAtual = 0
-countBetaRule = 0
 betas = []
+pilha = []
 
 def createTree():
     formula = Formula.Formula()
@@ -28,65 +28,59 @@ def createTree():
         formula.right = None
     return formula
 
-def alfaRule(val, subtree, ramo):
+def appRamo(val, subtree):
+    global ramo
     tablo = Tablo.Tablo()
     tablo.formula = subtree
     tablo.valor = val
     ramo.append(tablo)
-    return ramo
 
-def expAlfa(ramo):
-    global TamAtual
-    for i in ramo[TamAtual::]:
+def expAlfa(ptam):
+    global TamAtual, ramo
+    for i in ramo[ptam::]:
         if (i.valor == False):
             if (i.formula.str == ')'):
-                ramo = alfaRule(True,  i.formula.left,  ramo)
-                ramo = alfaRule(False, i.formula.right, ramo)
-                TamAtual += 1
+                appRamo(True,  i.formula.left)
+                appRamo(False, i.formula.right)
+                TamAtual += 2
             elif (i.formula.str == '+'):
-                ramo = alfaRule(False, i.formula.left,  ramo)
-                ramo = alfaRule(False, i.formula.right, ramo)
-                TamAtual += 1
+                appRamo(False, i.formula.left)
+                appRamo(False, i.formula.right)
+                TamAtual += 2
             elif (i.formula.str == '-'):
-                ramo = alfaRule(True,  i.formula.left,  ramo)
+                appRamo(True,  i.formula.left)
                 TamAtual += 1
             else:
                 betas.append(ramo.index(i))
         else: # (i.valor == True):
             if (i.formula.str == '*'):
-                ramo = alfaRule(True,  i.formula.left,  ramo)
-                ramo = alfaRule(True, i.formula.right, ramo)
-                TamAtual += 1
+                appRamo(True,  i.formula.left)
+                appRamo(True, i.formula.right)
+                TamAtual += 2
             elif (i.formula.str == '-'):
-                ramo = alfaRule(False,  i.formula.left,  ramo)
+                appRamo(False,  i.formula.left)
                 TamAtual += 1
             else:
                 betas.append(ramo.index(i))
     return ramo
 
-def expBeta(ramo):
-    global countBetaRule
-    for i in ramo:
-        if (i.valor == False):
-            if (i.formula.str == '*'):
-                ramo = betaRule()
-                ramo = betaRule()
-                countBetaRule += 1
-            if (i.formula.str == '-'):
-                ramo = betaRule()
-                countBetaRule += 1
-        if (i.valor == True):
-            if (i.formula.str == '+'):
-                ramo = betaRule()
-                ramo = betaRule()
-                countBetaRule += 1
-            if (i.formula.str == ')'):
-                ramo = betaRule()
-                ramo = betaRule()
-                countBetaRule += 1
-            if (i.formula.str == '-'):
-                ramo = betaRule()
-                countBetaRule += 1
+def expBeta(i):
+    global TamAtual, ramo, betas
+    if (ramo[i].valor == False):
+        if (ramo[i].formula.str == '*'):
+            appRamo(False, ramo[i].formula.left)
+            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
+            TamAtual += 1
+            #reproduzir nas outras betas
+    if (ramo[i].valor == True):
+        if (ramo[i].formula.str == '+'):
+            ramo = betaRule()
+            ramo = betaRule()
+            TamAtual += 1
+        if (ramo[i].formula.str == ')'):
+            ramo = betaRule()
+            ramo = betaRule()
+            TamAtual += 1
     return
 
 with open('test/3.seq') as f:
@@ -108,7 +102,7 @@ for i in formList:
     ramo.append(tablo)
 ramo[len(ramo)-1].valor = False
 
-ramo = expAlfa(ramo)
+expAlfa(TamAtual)
 
 print("Ramo:")
 for i in ramo:
@@ -119,3 +113,34 @@ print("Betas:")
 for i in betas:
     ramo[i].tprint()
     print()
+
+def closed():
+    global ramo
+    atoms = []
+    for i in ramo:
+        s = i.formula.str
+        if(s.isdigit()):
+            if([s, not i.valor] in atoms):
+                if([s, i.valor] in atoms):
+                    print("Ramo fechado")
+                    return True
+            else:
+                atoms.append([s, i.valor])
+    return atoms #ramo aberto
+                
+
+def proof():
+    global ramo, pilha, betas, TamAtual
+    while(True):
+        expAlfa(TamAtual)
+        atoms = closed()
+        if(atoms != True):
+            if(betas == []):
+                print("Não teorema")
+                print(atoms)
+                return False
+            else:
+                beta = betas.pop() 
+                expBeta(beta)
+
+proof()
