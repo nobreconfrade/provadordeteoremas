@@ -26,58 +26,38 @@ def createTree():
         formula.right = None
     return formula
 
+def alfa(val, subtree, ramo):
+    tablo = Tablo.Tablo()
+    tablo.formula = subtree
+    tablo.valor = val
+    ramo.append(tablo)
+    return ramo
+
 def expAlfa(ramo):
     global alfaRule
     for i in ramo:
-        tablo = Tablo.Tablo()
         if (i.valor == False):
-            # print(i.formula.str)
             if (i.formula.str == ')'):
-                tablo.formula = i.formula.left
-                tablo.valor = True
-                # print(tablo.valor)
-                # tablo.tprint()
-                # print()
-                ramo.append(tablo)
-                tablo = Tablo.Tablo()
-
-                # print(ramo[len(ramo)-1].valor)
-                # ramo[len(ramo)-1].tprint()
-                # print()
-                tablo.formula = i.formula.right
-                tablo.valor = False
-                ramo.append(tablo)
+                ramo = alfa(True,  i.formula.left,  ramo)
+                ramo = alfa(False, i.formula.right, ramo)
                 alfaRule += 1
             if (i.formula.str == '+'):
-                tablo.formula = i.formula.left
-                tablo.valor = False
-                ramo.append(tablo)
-                tablo = Tablo.Tablo()
-                tablo.formula = i.formula.right
-                tablo.valor = False
-                ramo.append(tablo)
+                ramo = alfa(False, i.formula.left,  ramo)
+                ramo = alfa(False, i.formula.right, ramo) 
                 alfaRule += 1
             if (i.formula.str == '-'):
-                tablo.formula = i.formula.left
-                tablo.valor = True
-                ramo.append(tablo)
+                ramo = alfa(True,  i.formula.left,  ramo)
                 alfaRule += 1
         if (i.valor == True):
             if (i.formula.str == '*'):
-                tablo.formula = i.formula.left
-                tablo.valor = True
-                ramo.append(tablo)
-                tablo = Tablo.Tablo()
-                tablo.formula = i.formula.right
-                tablo.valor = True
-                ramo.append(tablo)
+                ramo = alfa(True,  i.formula.left,  ramo)
+                ramo = alfa(True, i.formula.right, ramo)
                 alfaRule += 1
             if (i.formula.str == '-'):
-                tablo.formula = i.formula.left
-                tablo.valor = False
+                ramo = alfa(False,  i.formula.left,  ramo)
                 alfaRule += 1
-                ramo.append(tablo)
     return ramo
+
 
 with open('test/testAlfas.seq') as f:
     for l in f:
