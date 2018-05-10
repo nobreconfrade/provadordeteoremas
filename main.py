@@ -9,7 +9,8 @@ cardinality = 0
 rawGlobal = []
 formList = []
 ramo = []
-alfaRule = 0
+countAlfaRule = 0
+
 
 def createTree():
     formula = Formula.Formula()
@@ -26,7 +27,7 @@ def createTree():
         formula.right = None
     return formula
 
-def alfa(val, subtree, ramo):
+def alfaRule(val, subtree, ramo):
     tablo = Tablo.Tablo()
     tablo.formula = subtree
     tablo.valor = val
@@ -34,28 +35,28 @@ def alfa(val, subtree, ramo):
     return ramo
 
 def expAlfa(ramo):
-    global alfaRule
+    global countAlfaRule
     for i in ramo:
         if (i.valor == False):
             if (i.formula.str == ')'):
                 ramo = alfa(True,  i.formula.left,  ramo)
                 ramo = alfa(False, i.formula.right, ramo)
-                alfaRule += 1
+                countAlfaRule += 1
             if (i.formula.str == '+'):
                 ramo = alfa(False, i.formula.left,  ramo)
                 ramo = alfa(False, i.formula.right, ramo) 
-                alfaRule += 1
+                countAlfaRule += 1
             if (i.formula.str == '-'):
                 ramo = alfa(True,  i.formula.left,  ramo)
-                alfaRule += 1
+                countAlfaRule += 1
         if (i.valor == True):
             if (i.formula.str == '*'):
                 ramo = alfa(True,  i.formula.left,  ramo)
                 ramo = alfa(True, i.formula.right, ramo)
-                alfaRule += 1
+                countAlfaRule += 1
             if (i.formula.str == '-'):
                 ramo = alfa(False,  i.formula.left,  ramo)
-                alfaRule += 1
+                countAlfaRule += 1
     return ramo
 
 
