@@ -120,7 +120,14 @@ def proof():
                     # time.sleep(2)
                     expBeta(beta)
         else:
-            return False
+            if(pilha != []):
+                tip = pilha.pop()
+                betas = tip[3]
+                TamAtual = tip[2]
+                appRamo(tip[0],  tip[1])
+            else:
+                print("Teorema")
+                return True
 with open('test/3.seq') as f:
     for l in f:
         raw = []
