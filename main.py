@@ -3,6 +3,7 @@
 """
 import Formula
 import Tablo
+import time
 
 count         = 0
 cardinality   = 0
@@ -50,7 +51,7 @@ def expAlfa(ptam):
             elif (i.formula.str == '-'):
                 appRamo(True,  i.formula.left)
                 TamAtual += 1
-            else: #elif (i.formula.str.isdigit()):
+            elif (i.formula.str.isdigit() == False):
                 betas.append(ramo.index(i))
         else: # (i.valor == True):
             if (i.formula.str == '*'):
@@ -60,12 +61,12 @@ def expAlfa(ptam):
             elif (i.formula.str == '-'):
                 appRamo(False,  i.formula.left)
                 TamAtual += 1
-            else: #elif (i.formula.str.isdigit()):
+            elif (i.formula.str.isdigit() == False):
                 betas.append(ramo.index(i))
     return ramo
 
 def expBeta(i):
-    global TamAtual, ramo, betas
+    global TamAtual, ramo, betas, pilha
     if (ramo[i].valor == False):
         if (ramo[i].formula.str == '*'):
             appRamo(False, ramo[i].formula.left)
@@ -83,6 +84,47 @@ def expBeta(i):
             TamAtual += 1
     return
 
+def closed():
+    global ramo
+    atoms = []
+    for i in ramo:
+        s = i.formula.str
+        if(s.isdigit()):
+            if([s, not i.valor] in atoms):
+                if([s, i.valor] in atoms):
+                    print("Ramo fechado")
+                    return True
+            else:
+                atoms.append([s, i.valor])
+    return atoms #ramo aberto
+
+
+def proof():
+    global ramo, pilha, betas, TamAtual
+    while(True):
+        expAlfa(TamAtual)
+        atoms = closed()
+        # print(atoms)
+        if(atoms != True):
+            # print(betas)
+            if(betas == [] and pilha == []):
+                print("Não teorema")
+                return False
+            else:
+                if (pilha != []):
+                    pass
+                else:
+                    beta = betas.pop()
+                    print(pilha)
+                    # print(beta)
+                    # print("Ramo:")
+                    # for i in ramo:
+                    #     i.tprint()
+                    #     print()
+                    # time.sleep(2)
+                    expBeta(beta)
+        else:
+            return False
 with open('test/3.seq') as f:
     for l in f:
         raw = []
@@ -102,45 +144,16 @@ for i in formList:
     ramo.append(tablo)
 ramo[len(ramo)-1].valor = False
 
-expAlfa(TamAtual)
+# expAlfa(TamAtual)
 
 print("Ramo:")
 for i in ramo:
     i.tprint()
     print()
 
-print("Betas:")
-for i in betas:
-    ramo[i].tprint()
-    print()
-
-def closed():
-    global ramo
-    atoms = []
-    for i in ramo:
-        s = i.formula.str
-        if(s.isdigit()):
-            if([s, not i.valor] in atoms):
-                if([s, i.valor] in atoms):
-                    print("Ramo fechado")
-                    return True
-            else:
-                atoms.append([s, i.valor])
-    return atoms #ramo aberto
-                
-
-def proof():
-    global ramo, pilha, betas, TamAtual
-    while(True):
-        expAlfa(TamAtual)
-        atoms = closed()
-        if(atoms != True):
-            if(betas == []):
-                print("Não teorema")
-                print(atoms)
-                return False
-            else:
-                beta = betas.pop() 
-                expBeta(beta)
+# print("Betas:")
+# for i in betas:
+#     ramo[i].tprint()
+#     print()
 
 proof()
