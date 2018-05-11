@@ -3,7 +3,6 @@
 """
 import Formula
 import Tablo
-import time
 import sys
 
 count         = 0
