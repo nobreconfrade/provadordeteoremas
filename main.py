@@ -69,20 +69,67 @@ def expBeta(i):
     global TamAtual, ramo, betas, pilha
     if (ramo[i].valor == False):
         if (ramo[i].formula.str == '*'):
-            appRamo(False, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()]) # tem que mudar a valorização antes né
+            # appRamo(False, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()]) # tem que mudar a valorização antes né
+            ramo[i].formula.left.valor = False
+            ramo[i].formula.right.valor = False
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
             TamAtual += 1
             #reproduzir nas outras betas
     if (ramo[i].valor == True):
         if (ramo[i].formula.str == '+'):
-            appRamo(True, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
+            ramo[i].formula.left.valor = True
+            ramo[i].formula.right.valor = True
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
+            # appRamo(True, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
             TamAtual += 1
         if (ramo[i].formula.str == ')'):
-            appRamo(False, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
+            ramo[i].formula.left.valor = False
+            ramo[i].formula.right.valor = True
+            # print(betas)
+            # time.sleep(1)
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
+            # appRamo(False, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
             TamAtual += 1
-    return
+    return b1,b2
+
+def deepExpBeta(i):
+    global TamAtual, ramo, betas, pilha
+    if (ramo[i].valor == False):
+        if (ramo[i].formula.str == '*'):
+            # appRamo(False, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()]) # tem que mudar a valorização antes né
+            ramo[i].formula.left.valor = False
+            ramo[i].formula.right.valor = False
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
+            TamAtual += 1
+            #reproduzir nas outras betas
+    if (ramo[i].valor == True):
+        if (ramo[i].formula.str == '+'):
+            ramo[i].formula.left.valor = True
+            ramo[i].formula.right.valor = True
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
+            # appRamo(True, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
+            TamAtual += 1
+        if (ramo[i].formula.str == ')'):
+            ramo[i].formula.left.valor = False
+            ramo[i].formula.right.valor = True
+            # print(betas)
+            # time.sleep(1)
+            b1 = [ramo[i].formula.left, TamAtual, betas.copy()]
+            b2 = [ramo[i].formula.right, TamAtual, betas.copy()]
+            # appRamo(False, ramo[i].formula.left)
+            # pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
+            TamAtual += 1
+    return b1,b2
 
 def closed():
     global ramo
@@ -98,6 +145,29 @@ def closed():
                 atoms.append([s, i.valor])
     return atoms #ramo aberto
 
+def loopExtra(pilhaObjeto):
+    while True:
+        expAlfa(TamAtual)
+        atoms = closed()
+        if(atoms != True):
+            # print(betas)
+            if(pilhaObjeto[2] == []):
+                return False
+            else:
+                # print(pilhaObjeto)
+                beta = pilhaObjeto[2].pop()
+                resto = pilhaObjeto[2]
+                # print(resto)
+                # time.sleep(2)
+                b1,b2 = deepExpBeta(beta)
+                sorrow = loopExtra(b1)
+                if (sorrow == False):
+                    return False
+                sorrow = loopExtra(b2)
+                if (sorrow == False):
+                    return False
+        else:
+            return True
 
 def proof():
     global ramo, pilha, betas, TamAtual
@@ -122,9 +192,18 @@ def proof():
                     #     i.tprint()
                     #     print()
                     # time.sleep(2)
-                    expBeta(beta)
+                    b1,b2 = expBeta(beta)
+                    sadness = loopExtra(b1)
+                    if (sadness == False):
+                        print("Não teorema")
+                        return False
+                    sadness = loopExtra(b2)
+                    if (sadness == False):
+                        print("Não teorema")
+                        return False
         else:
             return False
+
 with open('test/3.seq') as f:
     for l in f:
         raw = []
