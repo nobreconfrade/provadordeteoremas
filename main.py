@@ -4,6 +4,7 @@
 import Formula
 import Tablo
 import time
+import sys
 
 count         = 0
 cardinality   = 0
@@ -15,6 +16,7 @@ betas         = []
 pilha         = []
 contregras    = 0
 contnos       = 0
+
 
 def createTree():
     formula     = Formula.Formula()
@@ -146,7 +148,8 @@ def proof():
             else:
                 print("Teorema")
                 return True
-with open('test/8.seq') as f:
+
+with open(sys.argv[1]) as f:
     for l in f:
         raw = []
         if (count == 0):
