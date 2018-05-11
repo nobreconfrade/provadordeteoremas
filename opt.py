@@ -7,7 +7,6 @@ import time
 import sys
 
 count         = 0
-cardinality   = 0
 TamAtual      = 0
 rawGlobal     = []
 formList      = []
@@ -41,6 +40,13 @@ def appRamo(val, subtree):
     ramo.append(tablo)
     contnos += 1
 
+def countNodes(f, n):
+    n += 1
+    if (f.str.isdigit()):
+        return n
+    n = countNodes(f.left, n)
+    n = countNodes(f.right, n)
+
 def expAlfa(ptam):
     global ramo, TamAtual, contregras
     for i in ramo[ptam::]:
@@ -59,8 +65,8 @@ def expAlfa(ptam):
                 appRamo(True,  i.formula.left)
                 TamAtual += 1
                 contregras += 1
-            elif (i.formula.str.isdigit() == False):
-                betas.append(ramo.index(i))
+            elif (not i.formula.str.isdigit()):
+                betas.append([ramo.index(i), countNodes(i.formula, 0)])
                 TamAtual += 1
                 contregras += 1
             else:
@@ -75,8 +81,8 @@ def expAlfa(ptam):
                 appRamo(False,  i.formula.left)
                 TamAtual += 1
                 contregras += 1
-            elif (i.formula.str.isdigit() == False):
-                betas.append(ramo.index(i))
+            elif (not i.formula.str.isdigit()):
+                betas.append([ramo.index(i), countNodes(i.formula, 0)])
                 TamAtual += 1
                 contregras += 1
             else:
@@ -107,37 +113,30 @@ def closed():
         s = i.formula.str
         if(s.isdigit()):
             if([s, not i.valor] in atoms):
-                #print("Ramo fechado")
-                #print("Ramo:")
-                #for i in ramo:
-                #    i.tprint()
-                #    print()
-                #print("-------------")
                 return True
             else:
                 atoms.append([s, i.valor])
     return atoms #ramo aberto
 
-
 def proof():
     global ramo, pilha, betas, TamAtual
     while(True):
-        #print(TamAtual)
         expAlfa(TamAtual)
         atoms = closed()
         if(atoms != True):
             if(betas == []):
                 print("Não teorema")
                 print(atoms)
-                #print("Ramo:")
-                #for i in ramo:
-                #    i.tprint()
-                #    print()
                 return atoms
             else:
                 if(betas != []):
+                    betas = sorted(betas, key = lambda tup: tup[1], reverse = True)
                     beta = betas.pop()
-                    expBeta(beta)
+                    expBeta(beta[0])
+                    print("Betas:")
+                    for i in betas:
+                        ramo[i].tprint()
+                        print()
         else:
             if(pilha != []):
                 tip = pilha.pop()
@@ -153,12 +152,10 @@ with open(sys.argv[1]) as f:
     for l in f:
         raw = []
         if (count == 0):
-            cardinality = l
             count += 1
         else:
             raw = l.split(" ")
             raw[len(raw)-1] = raw[len(raw)-1].rstrip()
-            # print(raw)
             rawGlobal = raw
             formList.append(createTree())
 for i in formList:
