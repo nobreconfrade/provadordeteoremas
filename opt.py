@@ -124,33 +124,59 @@ def expAlfa(ptam):
 
 def expBeta(i):
     global TamAtual, ramo, betas, pilha
-    
+    # verificar quem é maior, para ir na pilha
+    leftisBigger = True
+    subtreeA  = ramo[i].formula.left
+    subtreeB = ramo[i].formula.right
+
+    tamleft  = len(treeToStr(subtreeA, ''))
+    tamright = len(treeToStr(subtreeB, ''))
+
+    if (tamleft < tamright):
+        subtreeA = ramo[i].formula.right
+        subtreeB = ramo[i].formula.left
+        leftisBigger = False
+
     if (ramo[i].valor == False):
         if (ramo[i].formula.str == '*'):
-            appRamo(False, ramo[i].formula.left)
-            pilha.append([False, ramo[i].formula.right, TamAtual, betas.copy()])
+            appRamo(False, subtreeA)
+            pilha.append([False, subtreeB, TamAtual, betas.copy()])
     
     if (ramo[i].valor == True):
         if (ramo[i].formula.str == '+'):
-            appRamo(True, ramo[i].formula.left)
-            pilha.append([True, ramo[i].formula.right, TamAtual, betas.copy()])
+            appRamo(True, subtreeA)
+            pilha.append([True, subtreeB, TamAtual, betas.copy()])
         
         elif (ramo[i].formula.str == ')'):
-            appRamo(False, ramo[i].formula.left)
-            pilha.append([True, ramo[i].formula.right, TamAtual, betas.copy()])
+            if (leftisBigger):
+                appRamo(False, subtreeA)
+                pilha.append([True, subtreeB, TamAtual, betas.copy()])
+            else:
+                appRamo(True, subtreeA)
+                pilha.append([False, subtreeB, TamAtual, betas.copy()])
+
+# checkBeta()
+
+# def subformula():
+#     global betas
+#     for b in betas:
+#         i = b[0]
+#         if (ramo[i].valor == False):
+#             if (ramo[i].formula.str == '*'):
+#                 b1 = checkBeta(False, ramo[i].formula.left)
+#                 b2 = checkBeta([False, ramo[i].formula.right, TamAtual, betas.copy()])
+    
+#         if (ramo[i].valor == True):
+#             if (ramo[i].formula.str == '+'):
+#                 b1 = checkBeta(True, ramo[i].formula.left)
+#                 b2 = checkBeta([True, ramo[i].formula.right, TamAtual, betas.copy()])
+            
+#             elif (ramo[i].formula.str == ')'):
+#                 b1 = checkBeta(False, ramo[i].formula.left)
+#                 b2 = checkBeta([True, ramo[i].formula.right, TamAtual, betas.copy()]) 
 
 
-
-def subformula():
-    global betas
-    for b in betas:
-        i             = b[0]
-        tablo         = Tablo.Tablo()
-        tablo.formula = ramo[i].formula.left
-        tablo.valor   = val
-        tablo.string  = treeToStr(subtree, '')
-
-    return None
+#     return None
 
     # return i 
 
@@ -242,6 +268,6 @@ for i in ramo:
 #     print()
 
 proof()
-# print("Total de nós criados: ", contnos)
-# print("Total de regras aplicadas: ", contregras)
-# print("Total Ramos: ", contRamos)
+print("Total de nós criados: ", contnos)
+print("Total de regras aplicadas: ", contregras)
+print("Total Ramos: ", contRamos)
