@@ -70,18 +70,15 @@ def expBeta(i):
     if (ramo[i].valor == False):
         if (ramo[i].formula.str == '*'):
             appRamo(False, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()]) # tem que mudar a valorização antes né
-            TamAtual += 1
+            pilha.append([False, ramo[i].formula.right, TamAtual, betas.copy()])
             #reproduzir nas outras betas
     if (ramo[i].valor == True):
         if (ramo[i].formula.str == '+'):
             appRamo(True, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
-            TamAtual += 1
+            pilha.append([True, ramo[i].formula.right, TamAtual, betas.copy()])
         if (ramo[i].formula.str == ')'):
             appRamo(False, ramo[i].formula.left)
-            pilha.append([ramo[i].formula.right, TamAtual, betas.copy()])
-            TamAtual += 1
+            pilha.append([True, ramo[i].formula.right, TamAtual, betas.copy()])
     return
 
 def closed():
@@ -91,9 +88,8 @@ def closed():
         s = i.formula.str
         if(s.isdigit()):
             if([s, not i.valor] in atoms):
-                if([s, i.valor] in atoms):
-                    print("Ramo fechado")
-                    return True
+                print("Ramo fechado")
+                return True
             else:
                 atoms.append([s, i.valor])
     return atoms #ramo aberto
@@ -102,20 +98,20 @@ def closed():
 def proof():
     global ramo, pilha, betas, TamAtual
     while(True):
-        expAlfa(TamAtual)
+        #print(TamAtual-1)
+        expAlfa(TamAtual-1)
         atoms = closed()
         # print(atoms)
         if(atoms != True):
             # print(betas)
             if(betas == [] and pilha == []):
                 print("Não teorema")
-                return False
+                print(atoms)
+                return atoms
             else:
-                if (pilha != []):
-                    pass
-                else:
+                if(betas != []):
                     beta = betas.pop()
-                    print(pilha)
+                    #print(pilha)
                     # print(beta)
                     # print("Ramo:")
                     # for i in ramo:
@@ -144,7 +140,7 @@ for i in formList:
     ramo.append(tablo)
 ramo[len(ramo)-1].valor = False
 
-# expAlfa(TamAtual)
+expAlfa(0)
 
 print("Ramo:")
 for i in ramo:
