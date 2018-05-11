@@ -9,14 +9,14 @@ import sys
 count         = 0
 cardinality   = 0
 TamAtual      = 0
+contregras    = 0
+contnos       = 0
+contRamos     = 0
 rawGlobal     = []
 formList      = []
 ramo          = []
 betas         = []
 pilha         = []
-contregras    = 0
-contnos       = 0
-
 
 def createTree():
     formula     = Formula.Formula()
@@ -120,7 +120,7 @@ def closed():
 
 
 def proof():
-    global ramo, pilha, betas, TamAtual
+    global ramo, pilha, betas, TamAtual, contRamos
     while(True):
         #print(TamAtual)
         expAlfa(TamAtual)
@@ -145,6 +145,7 @@ def proof():
                 TamAtual = tip[2]
                 ramo = ramo[:TamAtual]
                 appRamo(tip[0],  tip[1])
+                contRamos += 1
             else:
                 print("Teorema")
                 return True
@@ -169,6 +170,7 @@ for i in formList:
 ramo[len(ramo)-1].valor = False
 
 print("Ramo inicial:")
+contRamos = 1
 for i in ramo:
     i.tprint()
     print()
@@ -181,3 +183,4 @@ for i in ramo:
 proof()
 print("Total de nós criados: ", contnos)
 print("Total de regras aplicadas: ", contregras)
+print("Total Ramos: ", contRamos)

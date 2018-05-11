@@ -8,14 +8,14 @@ import sys
 
 count         = 0
 TamAtual      = 0
+contregras    = 0
+contnos       = 0
+contRamos     = 0
 rawGlobal     = []
 formList      = []
 ramo          = []
 betas         = []
 pilha         = []
-contregras    = 0
-contnos       = 0
-
 
 def createTree():
     formula     = Formula.Formula()
@@ -46,6 +46,7 @@ def countNodes(f, n):
         return n
     n = countNodes(f.left, n)
     n = countNodes(f.right, n)
+    return n
 
 def expAlfa(ptam):
     global ramo, TamAtual, contregras
@@ -94,6 +95,7 @@ def expAlfa(ptam):
 def expBeta(i):
     global TamAtual, ramo, betas, pilha
     if (ramo[i].valor == False):
+        # ramo[i].nomedoatributo = 09323
         if (ramo[i].formula.str == '*'):
             appRamo(False, ramo[i].formula.left)
             pilha.append([False, ramo[i].formula.right, TamAtual, betas.copy()])
@@ -119,7 +121,7 @@ def closed():
     return atoms #ramo aberto
 
 def proof():
-    global ramo, pilha, betas, TamAtual
+    global ramo, pilha, betas, TamAtual, contRamos
     while(True):
         expAlfa(TamAtual)
         atoms = closed()
@@ -131,12 +133,9 @@ def proof():
             else:
                 if(betas != []):
                     betas = sorted(betas, key = lambda tup: tup[1], reverse = True)
+                    # print(betas)
                     beta = betas.pop()
                     expBeta(beta[0])
-                    print("Betas:")
-                    for i in betas:
-                        ramo[i].tprint()
-                        print()
         else:
             if(pilha != []):
                 tip = pilha.pop()
@@ -144,6 +143,7 @@ def proof():
                 TamAtual = tip[2]
                 ramo = ramo[:TamAtual]
                 appRamo(tip[0],  tip[1])
+                contRamos += 1
             else:
                 print("Teorema")
                 return True
@@ -166,6 +166,7 @@ for i in formList:
 ramo[len(ramo)-1].valor = False
 
 print("Ramo inicial:")
+contRamos = 1
 for i in ramo:
     i.tprint()
     print()
@@ -178,3 +179,4 @@ for i in ramo:
 proof()
 print("Total de nós criados: ", contnos)
 print("Total de regras aplicadas: ", contregras)
+print("Total Ramos: ", contRamos)
