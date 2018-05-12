@@ -199,21 +199,14 @@ def closed():
 
     return atoms #ramo aberto
 
-# def closedWithFormula(tam):
-#     global ramo, TamAtual
+def closedWithFormula(tam):
+    global ramo, TamAtual
 
-
-#     for i in ramo[tam::]:
-#         for j in ramo[::tam]:
-#             pass
-#         s = i.formula.str
-#             if([s, not i.valor] in atoms):
-#                 return True
-            
-#             else:
-#                 atoms.append([s, i.valor])
-
-#     return atoms #ramo aberto
+    for i in ramo[tam::]:
+        for j in ramo[::tam]:
+            if((j.string == i.string) and (not j.valor == i.valor)):   
+                pass
+    return 
 
 
 def proof():
