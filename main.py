@@ -127,6 +127,7 @@ def proof():
         if(atoms != True):
             if(betas == []):
                 print("Não teorema")
+                atoms = sorted(atoms, key = lambda tup: tup[0])
                 print(atoms)
                 #print("Ramo:")
                 #for i in ramo:

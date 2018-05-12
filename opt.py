@@ -155,30 +155,33 @@ def expBeta(i):
                 appRamo(True, subtreeA)
                 pilha.append([False, subtreeB, TamAtual, betas.copy()])
 
-# checkBeta()
+def subformula():
+    global betas, ramo
 
-# def subformula():
-#     global betas
-#     for b in betas:
-#         i = b[0]
-#         if (ramo[i].valor == False):
-#             if (ramo[i].formula.str == '*'):
-#                 b1 = checkBeta(False, ramo[i].formula.left)
-#                 b2 = checkBeta([False, ramo[i].formula.right, TamAtual, betas.copy()])
-    
-#         if (ramo[i].valor == True):
-#             if (ramo[i].formula.str == '+'):
-#                 b1 = checkBeta(True, ramo[i].formula.left)
-#                 b2 = checkBeta([True, ramo[i].formula.right, TamAtual, betas.copy()])
-            
-#             elif (ramo[i].formula.str == ')'):
-#                 b1 = checkBeta(False, ramo[i].formula.left)
-#                 b2 = checkBeta([True, ramo[i].formula.right, TamAtual, betas.copy()]) 
+    for b in betas:
+        bExp = []
+        i    = b[0]    
 
+        leftstring  = treeToStr(ramo[i].formula.left,  '')
+        rightstring = treeToStr(ramo[i].formula.right, '')
+        
+        if (ramo[i].formula.str == '*'):
+            bExp.append([False, leftstring])
+            bExp.append([False, rightstring])
 
-#     return None
+        if (ramo[i].formula.str == '+'):
+            bExp.append([True, leftstring])
+            bExp.append([True, rightstring])
+        
+        elif (ramo[i].formula.str == ')'):
+            bExp.append([False, leftstring])
+            bExp.append([True,  rightstring] )
 
-    # return i 
+        for j in ramo:
+            if([not j.valor, j.string] in bExp):
+                return b.index(i)
+
+        return None
 
 def closed():
     global ramo
@@ -196,28 +199,49 @@ def closed():
 
     return atoms #ramo aberto
 
+# def closedWithFormula(tam):
+#     global ramo, TamAtual
+
+
+#     for i in ramo[tam::]:
+#         for j in ramo[::tam]:
+#             pass
+#         s = i.formula.str
+#             if([s, not i.valor] in atoms):
+#                 return True
+            
+#             else:
+#                 atoms.append([s, i.valor])
+
+#     return atoms #ramo aberto
+
+
 def proof():
     global ramo, pilha, betas, TamAtual, contRamos
     
     while(True):
+        old = TamAtual
         expAlfa(TamAtual)
-
+        # closedWithFormula(old)
         atoms = closed()
 
         if(atoms != True):
             if(betas == []):
                 print("Não teorema")
+                atoms = sorted(atoms, key = lambda tup: tup[0])
                 print(atoms)
                 return atoms
             
             else:
                 if(betas != []):
-                    ibeta = None
-                    # if ((ibeta = subformula()) != None):
-                        # beta  = betas.pop(betas.index(ibeta))
-                    # else:
+
                     betas = sorted(betas, key = lambda tup: tup[1], reverse = True)
-                    beta  = betas.pop()
+                    i     = subformula()
+                    if (i != None):
+                        beta = betas.pop(i)
+                    else:
+                        beta = betas.pop()
+                    
                     expBeta(beta[0])
         else:
             if(pilha != []):
